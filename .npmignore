@@ -1,0 +1,11 @@
+# npm 包只发布 bin/ cli/ skill/ version.json README.md package.json，
+# 这里再补一层保险，防止以后某个文件意外被打包。
+tests/
+.omc/
+.git/
+.github/
+.gitignore
+*.pyc
+__pycache__/
+*.log
+.DS_Store
