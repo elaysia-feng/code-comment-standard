@@ -1,0 +1,31 @@
+{
+  "name": "code-comment-standard",
+  "version": "1.0.0",
+  "description": "ccs —— 团队代码注释规范（Java/Python）skill 的安装与更新管理器",
+  "bin": {
+    "ccs": "bin/ccs.js"
+  },
+  "files": [
+    "bin/",
+    "cli/",
+    "skill/",
+    "version.json",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com:elaysia-feng/code-comment-standard.git"
+  },
+  "keywords": [
+    "skill",
+    "claude",
+    "codex",
+    "comments",
+    "javadoc",
+    "docstring"
+  ],
+  "license": "MIT"
+}

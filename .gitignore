@@ -1,0 +1,282 @@
+# ============================================================
+#  oh-my-claudecode (OMC) 本地状态 —— 绝不入库
+# ============================================================
+.omc/
+!.omc/.gitkeep
+
+# Claude Code 本地设置
+.claude/settings.local.json
+.claude/*.local.json
+
+# ============================================================
+#  Python
+# ============================================================
+# 字节码 / 优化产物
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.pyd
+*.pyo
+
+# 发行包 / 构建产物
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+*.egg
+MANIFEST
+
+# 测试 / 覆盖率
+.coverage
+.coverage.*
+.cache
+coverage.xml
+htmlcov/
+.pytest_cache/
+.tox/
+.nox/
+.mypy_cache/
+.ruff_cache/
+.pyright_cache/
+.hypothesis/
+
+# 虚拟环境
+.venv/
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# Jupyter
+.ipynb_checkpoints/
+profile_default/
+ipython_config.py
+
+# mypy / bandit
+.mypy_cache/
+.bandit/
+
+# 翻译
+*.mo
+*.pot
+
+# Django / Flask / FastAPI 常见产物
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+instance/
+.webassets-cache
+staticfiles/
+media/
+
+# ============================================================
+#  Java
+# ============================================================
+# 编译产物
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+hs_err_pid*
+replay_pid*
+
+# 构建工具目录
+target/
+build/
+out/
+bld/
+.gradle/
+build.gradle.lockfile
+
+# IDE —— IntelliJ IDEA / Android Studio
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# IDE —— Eclipse
+.classpath
+.project
+.settings/
+.factorypath
+bin/
+.metadata
+.loadpath
+
+# IDE —— NetBeans
+nbproject/private/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+
+# IDE —— VS Code（Java 扩展）
+.vscode/
+!.vscode/settings.json
+!.vscode/extensions.json
+*.code-workspace
+.classpath
+
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# Gradle
+.gradle/
+gradle-app.setting
+!gradle/wrapper/gradle-wrapper.jar
+!gradle-wrapper.properties
+
+# Spring Boot
+HELP.md
+!.gradle/
+spring-boot.log
+
+# 日志 / 临时
+*.log
+logs/
+tmp/
+temp/
+
+# ============================================================
+#  Node / JavaScript（脚本里可能引用）
+# ============================================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-store/
+.parcel-cache/
+.next/
+.nuxt/
+.cache/
+
+# ============================================================
+#  环境变量 / 密钥 / 本地配置
+# ============================================================
+.env
+.env.*
+!.env.example
+.envrc
+*.pem
+*.key
+*.crt
+secrets/
+config/local.*
+config/*.local.*
+
+# ============================================================
+#  操作系统
+# ============================================================
+# Windows
+Thumbs.db
+ehthumbs.db
+ehthumbs_view.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+.fseventsd
+.TemporaryItems
+.AppleDouble
+.LSOverride
+Icon?
+.DocumentRevisions-V100
+.flag
+.com.apple.*
+
+# Linux
+*~
+.fuse_hidden*
+.Trash-*
+.nfs*
+
+# ============================================================
+#  编辑器 / IDE 通用
+# ============================================================
+.vscode/
+!.vscode/settings.json.example
+!.vscode/extensions.json
+.idea/
+*.swp
+*.swo
+*.swn
+*~
+.cache/
+.project
+.cproject
+.tmux*
+.history/
+
+# ============================================================
+#  文档 / 杂项
+# ============================================================
+# Office 临时锁文件
+.~*
+*.tmp
+*.bak
+*.swp
+*.orig
+
+# PDF / 编译输出（如未来引入）
+*.pdf.aux
+*.pdf.log
+*.pdf.out
+*.pdf.toc
+*.pdf.synctex.gz
+
+# 截图 / 草稿（仓库通常不收）
+*.sketch
+*.fig
+
+# ============================================================
+#  Git 自身
+# ============================================================
+*.orig
+*.rej
+.git/
+.gitattributes.bak
+
+# ============================================================
+#  仓库自定义 —— 防御性兜底
+# ============================================================
+# 任何名为 output / outputs / dist 的临时输出目录
+/output/
+/outputs/
+/dist/
+
+# ccs CLI 入口目录（上面 Eclipse 段的 bin/ 规则误伤了它，这里放行）
+!bin/

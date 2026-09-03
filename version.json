@@ -1,0 +1,8 @@
+{
+  "version": "1.0.0",
+  "files": [
+    "SKILL.md",
+    "references/examples.md",
+    "scripts/check_comments.py"
+  ]
+}
