@@ -1,6 +1,6 @@
 {
   "name": "code-comment-standard",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "ccs —— 团队代码注释规范（Java/Python）skill 的安装与更新管理器",
   "bin": {
     "ccs": "bin/ccs.js"

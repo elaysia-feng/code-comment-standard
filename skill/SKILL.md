@@ -1,18 +1,23 @@
 ---
 name: code-comment-standard
-description: 团队代码注释规范（基于 Google Style，Java 用 Javadoc、Python 用 Google Docstring），并要求复杂方法内部使用步骤编号注释（// 1. // 1.1 ...）拆解执行流程。仅在用户**显式提到注释**（如"加注释"、"补注释"、"写 Javadoc"、"写 docstring"、"加 docstring"、"加步骤注释"、"注释规范"、"注释标准"、"步骤编号"、"TODO 没负责人"、"补 Attributes"、"docstring 缺 Returns"等）时触发。普通的代码审查/PR review/重构请求**不要**因为关键词而强拉本 skill。
+description: Java / Python 编码注释规范（Java 使用 Javadoc，Python 使用 Google Docstring，复杂方法使用步骤编号注释）。凡是新增、编写、修改或重构 Java / Python 代码时自动应用，无需用户额外提到注释；显式要求检查或补充注释时同样适用。纯只读审查、代码解释以及其他语言的编码任务不触发，除非用户明确要求使用本规范。
 ---
 
 # 代码注释规范
 
 ## 何时使用
 
-编写、修改 Java / Python 代码时，用户明确要求"加注释 / 补注释 / 写 Javadoc /
-写 docstring / 加步骤编号"，或者用户指出注释违规（"TODO 没标负责人"、"类缺 Attributes:"、
-"复杂方法没拆步骤"等）时，按本规范生成或检查注释。
+凡是任务会实际新增、编写、修改或重构 Java / Python 代码，都自动应用本规范，
+无需用户额外说"加注释"。修改代码时同步检查本次涉及的类、方法和函数，使新增或
+受影响的注释符合规范。
 
-普通的代码审查、PR review、重构请求不应触发本 skill——那类场景关注的是逻辑、
-性能、可读性，不是注释本身。
+用户显式要求"加注释 / 补注释 / 写 Javadoc / 写 docstring / 加步骤编号"，或者指出
+注释违规（"TODO 没标负责人"、"类缺 Attributes:"、"复杂方法没拆步骤"等）时，
+也按本规范生成或检查注释。
+
+纯只读的代码审查、PR review、代码解释，以及不涉及 Java / Python 的编码任务不自动
+触发。如果只读审查之后需要实际修改 Java / Python 代码，从开始修改时应用本规范。
+用户明确要求不新增或不修改注释时，以用户要求为准。
 
 以下场景不强制套用：单元测试的简单夹具与断言方法、框架或 IDE 生成的样板代码
 （如 Lombok）、一次性脚本与教学示例代码。

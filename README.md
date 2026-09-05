@@ -51,11 +51,25 @@ ccs status
 看到类似这样的输出就成功了：
 
 ```
-Codex        ✓ installed  1.0.0
-Claude Code  ✓ installed  1.0.0
+Codex        ✓ installed  1.0.2
+Claude Code  ✓ installed  1.0.2
 ```
 
 ---
+
+## 自动触发
+
+安装后，只要让 Codex 或 Claude Code **新增、修改或重构 Java / Python 代码**，
+Skill 就会自动应用，无需额外说"请加注释"。
+
+例如直接说：
+
+```text
+修复 UserService 的注册逻辑
+```
+
+AI 在修改代码时会同时遵守本仓库的 Javadoc、Docstring、步骤编号和 TODO 规则。
+纯代码解释、只读审查和其他编程语言默认不触发。
 
 ## 日常使用
 
