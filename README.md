@@ -18,7 +18,7 @@
 - ✅ **复杂方法用 `// 1.` `// 1.1` 编号注释**拆解执行流程
 - ✅ **所有注释一律使用中文**（专有名词除外）
 - ✅ `TODO` 必须标注负责人
-- ✅ 每次写完代码，跑 `ccs check` 自动校验
+- ✅ 每次写完代码，运行 Skill 自带脚本校验
 
 代码里没写的注释、写得不对的注释，**会被团队规范拒绝**。
 
@@ -61,7 +61,7 @@ Claude Code  ✓ installed  1.0.0
 
 | 命令 | 做什么 |
 |---|---|
-| `ccs check` | 看你的注释是否符合规范 |
+| `ccs check` | 检查本地 Skill 是否有新版本 |
 | `ccs update` | 拉取最新规范（团队改了规则你立刻就能拿到） |
 | `ccs status` | 看哪些工具已安装、什么版本 |
 | `ccs version` | 看 CLI 与已装 skill 版本 |
@@ -73,6 +73,8 @@ py skill/scripts/check_comments.py src/
 ```
 
 （在仓库根目录运行）它会列出 ERROR 和 WARNING，**ERROR 必须修干净**才能提交。
+
+`ccs check` 只检查已安装 Skill 的版本，不扫描项目源码。
 
 ---
 
@@ -237,7 +239,7 @@ py skill/scripts/check_comments.py 你改的文件.py
 
 ### Q: ccs update 会覆盖我改过的本地 skill 文件吗？
 
-答：会。如果你想保留自定义版本，先备份再 update，或者本地装好后切到非自动同步模式（见 `ccs update --help`，如果有的话）。
+答：会。如果你想保留自定义版本，请先备份；`ccs update` 会用发布版本完整覆盖已安装目录。
 
 ### Q: 我怎么改规则？
 

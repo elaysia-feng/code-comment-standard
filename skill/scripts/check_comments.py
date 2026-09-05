@@ -72,6 +72,10 @@ JAVA_METHOD_RE = re.compile(
 )
 
 JAVA_BRANCH_RE = re.compile(r"\b(?:if|for|while|switch|try|catch|do)\b")
+JAVA_LOCAL_TYPE_RE = re.compile(r"\b(?:class|interface|enum|record)\s+[\w$]+\b")
+JAVA_ANONYMOUS_TYPE_RE = re.compile(
+    r"\bnew\s+[\w$.<>?,\[\]\s]+\s*\([^;{}]*\)\s*$"
+)
 
 
 @dataclass
@@ -333,28 +337,25 @@ def _python_returns_value(node: ast.AST) -> bool:
     Returns:
         存在带值的 return、yield 或非 None 的返回注解时返回 True。
     """
-    # 1. 返回注解显式写了非 None / 非字符串字面量类型
-    #    字符串字面量可能是 `from __future__ import annotations` 下或 PEP 563
-    #    前向引用，例如 `def f() -> "None":`，无法静态判定，保守处理
+    # 1. 返回注解显式写了非 None 类型；同时兼容字符串形式的 "None"
+    #    其他字符串前向引用（如 "User"）都代表有返回值
     annotation = getattr(node, "returns", None)
     if annotation is not None:
-        is_none_literal = (
-            isinstance(annotation, ast.Constant)
-            and annotation.value is None
-        )
-        is_string_literal = (
-            isinstance(annotation, ast.Constant)
-            and isinstance(annotation.value, str)
-        )
-        if not is_none_literal and not is_string_literal:
+        is_none = isinstance(annotation, ast.Constant) and annotation.value in (None, "None")
+        if not is_none:
             return True
 
     # 2. 否则看函数体内是否有 return <值> 或 yield
-    for child in ast.walk(node):
-        if isinstance(child, ast.Return) and child.value is not None:
-            return True
-        if isinstance(child, (ast.Yield, ast.YieldFrom)):
-            return True
+    body = node.body  # type: ignore[attr-defined]
+    for stmt in body:
+        for child in _walk_skip_nested(stmt):
+            if child is stmt and isinstance(
+                    child, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+                continue
+            if isinstance(child, ast.Return) and child.value is not None:
+                return True
+            if isinstance(child, (ast.Yield, ast.YieldFrom)):
+                return True
     return False
 
 
@@ -743,13 +744,77 @@ def _is_complex_java(code: List[str], start: int, end: int) -> bool:
     Returns:
         行数或分支数达到阈值时返回 True。
     """
-    length = end - start + 1
+    outer_code, included_lines = _java_outer_method_view(code, start, end)
+    length = sum(included_lines)
     if length < SIMPLE_LINE_THRESHOLD:
         return False
     if length >= COMPLEX_LINE_THRESHOLD:
         return True
-    branches = sum(len(JAVA_BRANCH_RE.findall(line)) for line in code[start:end + 1])
+    branches = sum(len(JAVA_BRANCH_RE.findall(line)) for line in outer_code)
     return branches >= COMPLEX_BRANCH_THRESHOLD
+
+
+def _java_outer_method_view(code: List[str], start: int,
+                            end: int) -> Tuple[List[str], List[bool]]:
+    """移除 Java 方法内局部类与匿名类的实现，只保留外层方法代码。
+
+    Args:
+        code: 去噪后的代码行列表。
+        start: 方法体起始行下标。
+        end: 方法体结束行下标。
+
+    Returns:
+        外层代码行与每个原始行是否仍属于外层方法的标记。
+    """
+    outer_lines: List[str] = []
+    included_lines: List[bool] = []
+    depth = 0
+    skipped_depth: Optional[int] = None
+    header = ""
+
+    for line in code[start:end + 1]:
+        output = [" "] * len(line)
+        outside_nested = skipped_depth is None
+        for index, char in enumerate(line):
+            if skipped_depth is not None:
+                if char == "{":
+                    depth += 1
+                elif char == "}":
+                    depth -= 1
+                    if depth < skipped_depth:
+                        skipped_depth = None
+                        outside_nested = True
+                        output[index] = char
+                        header = ""
+                continue
+
+            outside_nested = True
+            if char == "{":
+                is_nested_type = depth >= 1 and (
+                    JAVA_LOCAL_TYPE_RE.search(header) is not None
+                    or JAVA_ANONYMOUS_TYPE_RE.search(header) is not None
+                )
+                depth += 1
+                if is_nested_type:
+                    skipped_depth = depth
+                else:
+                    output[index] = char
+                header = ""
+            elif char == "}":
+                depth -= 1
+                output[index] = char
+                header = ""
+            else:
+                output[index] = char
+                if char == ";":
+                    header = ""
+                else:
+                    header = (header + char)[-1000:]
+
+        outer_lines.append("".join(output))
+        included_lines.append(outside_nested)
+
+    return outer_lines, included_lines
 
 
 # --------------------------------------------------------------------------

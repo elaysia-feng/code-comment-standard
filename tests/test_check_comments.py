@@ -93,6 +93,30 @@ def test_future_annotations_none():
         f"def ... -> int should be flagged missing-returns; lines={miss}"
 
 
+def test_string_return_annotation_requires_returns_section():
+    """字符串形式的非 None 返回注解同样应要求 Returns: 小节。"""
+    src = '''def load_user() -> "User":
+    """加载用户。"""
+    raise NotImplementedError
+'''
+    issues = cc.check_python_file(Path("string_annotation.py"), src)
+    assert "missing-returns" in _codes(issues), \
+        f"string return annotation was ignored; codes={_codes(issues)}"
+
+
+def test_nested_return_does_not_affect_outer_function():
+    """内部函数的返回值不应让外层函数被误判为需要 Returns:。"""
+    src = '''def outer():
+    """执行外层流程。"""
+    def inner():
+        return 1
+    inner()
+'''
+    issues = cc.check_python_file(Path("nested_return.py"), src)
+    assert "missing-returns" not in _codes(issues), \
+        f"nested return leaked into outer function; codes={_codes(issues)}"
+
+
 # ---------------------------------------------------------------------------
 # Minor：Java text block 里的 fake_method 不应被识别为方法
 # ---------------------------------------------------------------------------
@@ -103,6 +127,35 @@ def test_java_text_block_fake_method_ignored():
     names = [i.message for i in issues]
     assert not any("fake_method" in m for m in names), \
         f"fake_method from text block leaked into issues; names={names}"
+
+
+def test_java_anonymous_class_branches_ignored_for_outer_method():
+    """匿名类内部的分支不应计入外层 Java 方法复杂度。"""
+    # 1. 构造一个分支全部位于匿名类内部的 Java 外层短方法
+    src = '''public class Demo {
+    /** 执行任务。 */
+    public void run() {
+        Runnable job = new Runnable() {
+            /** 执行内部任务。 */
+            public void execute() {
+                if (a) {}
+                if (b) {}
+                if (c) {}
+                if (d) {}
+                if (e) {}
+                if (f) {}
+                if (g) {}
+                if (h) {}
+            }
+        };
+        job.run();
+    }
+}
+'''
+    # 2. 确认匿名类的复杂度没有泄漏到外层 run 方法
+    issues = cc.check_java_file(Path("Demo.java"), src)
+    outer_step_issues = [i for i in issues if i.code == "missing-steps" and "`run`" in i.message]
+    assert not outer_step_issues, f"anonymous class branches leaked into run(): {outer_step_issues}"
 
 
 # ---------------------------------------------------------------------------
@@ -132,7 +185,10 @@ if __name__ == "__main__":
         test_critical3_javadoc_literal_block,
         test_todo_case_insensitive,
         test_future_annotations_none,
+        test_string_return_annotation_requires_returns_section,
+        test_nested_return_does_not_affect_outer_function,
         test_java_text_block_fake_method_ignored,
+        test_java_anonymous_class_branches_ignored_for_outer_method,
         test_missing_attributes_warning,
     ]
     failures = 0

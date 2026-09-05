@@ -197,9 +197,9 @@ async def fetch_user(user_id: int) -> User:
 
 ```python
 @property
-    def is_active(self) -> bool:
-        """账号是否处于激活状态。"""
-        return self._status == Status.ACTIVE
+def is_active(self) -> bool:
+    """账号是否处于激活状态。"""
+    return self._status == Status.ACTIVE
 ```
 
 ### 2.4 Python 生成器 `Yields:`
